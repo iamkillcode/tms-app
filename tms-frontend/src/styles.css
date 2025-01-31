@@ -1,0 +1,20 @@
+/* Base styles for desktop */
+.container {
+    width: 80%;
+    margin: auto;
+}
+
+/* Responsive styles for tablets */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+}
+
+/* Responsive styles for mobile devices */
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+        padding: 10px;
+    }
+} 

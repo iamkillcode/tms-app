@@ -17,4 +17,13 @@ router.post('/:tenderId', authenticateToken, async (req, res) => {
   }
 });
 
+router.post('/generate-iso', authenticateToken, async (req, res) => {
+    const { division, department, typeOfLetter } = req.body;
+    const year = new Date().getFullYear();
+    const sequentialNumber = await getNextISOSequentialNumber(); // Implement this function to get the next ISO number
+
+    const isoNumber = `FDA/${division}/${department}/${typeOfLetter}/${year}/${sequentialNumber}`;
+    res.json({ isoNumber });
+});
+
 module.exports = router; 

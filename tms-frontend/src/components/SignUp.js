@@ -1,51 +1,44 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import axios from 'axios';
 
 const SignUp = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post('/api/auth/signup', { username, password });
-      alert('User created successfully');
-    } catch (error) {
-      alert('Error creating user');
-    }
-  };
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+        try {
+            await axios.post('/api/auth/signup', { fullName, username, email, password });
+            alert('User created successfully');
+        } catch (error) {
+            alert('Error creating user');
+        }
+    };
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center">Sign Up</h2>
-        <form onSubmit={handleSignUp} className="space-y-4">
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            required
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-          />
-          <button
-            type="submit"
-            className="w-full py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
-          >
-            Sign Up
-          </button>
-        </form>
-      </div>
-    </div>
-  );
+    return (
+        <div className="signup-container">
+            <h2>Sign Up</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <TextField label="Full Name" variant="outlined" fullWidth value={fullName} onChange={e => setFullName(e.target.value)} required />
+                <TextField label="Username" variant="outlined" fullWidth value={username} onChange={e => setUsername(e.target.value)} required />
+                <TextField label="Email" variant="outlined" fullWidth type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+                <TextField label="Password" variant="outlined" fullWidth type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+                <TextField label="Confirm Password" variant="outlined" fullWidth type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
+                <Button type="submit" variant="contained" color="primary" fullWidth>Sign Up</Button>
+            </form>
+            <p>Already have an account? <Link to="/login">Login</Link></p>
+        </div>
+    );
 };
 
 export default SignUp; 
