@@ -1,0 +1,254 @@
+[
+    {
+        "Category Code": "A.1.2",
+        "Category Description": "Other Equipment (General\n Purpose Equipment for\n Laboratory)"
+    },
+    {
+        "Category Code": "A.2",
+        "Category Description": "Chemicals/ Reagents"
+    },
+    {
+        "Category Code": "A.3",
+        "Category Description": "Microbiology Media/Petri Dishes"
+    },
+    {
+        "Category Code": "A.4",
+        "Category Description": "Reference Standards\n /PTS/Biological Products"
+    },
+    {
+        "Category Code": "A.4.1",
+        "Category Description": "Reference Standards from USP,\n BP, EMU"
+    },
+    {
+        "Category Code": "A.4.2",
+        "Category Description": "Ghana Reference Standards"
+    },
+    {
+        "Category Code": "A.5",
+        "Category Description": "Furniture & Fittings"
+    },
+    {
+        "Category Code": "A.6",
+        "Category Description": "Works"
+    },
+    {
+        "Category Code": "A.6.1",
+        "Category Description": "Construction (New Construction)"
+    },
+    {
+        "Category Code": "A.6.2",
+        "Category Description": "Renovation/Repair of an existing structure"
+    },
+    {
+        "Category Code": "A.7",
+        "Category Description": "Vehicles"
+    },
+    {
+        "Category Code": "A.8",
+        "Category Description": "Cooling System"
+    },
+    {
+        "Category Code": "A.8.1",
+        "Category Description": "Split Unit"
+    },
+    {
+        "Category Code": "A.8.2",
+        "Category Description": "Central Unit"
+    },
+    {
+        "Category Code": "A.9",
+        "Category Description": "Computers and Accessories"
+    },
+    {
+        "Category Code": "A.10",
+        "Category Description": "Purchase of Electricals and\n Electronics (CCTV, Refrigerator)"
+    },
+    {
+        "Category Code": "A.11",
+        "Category Description": "Consultancy"
+    },
+    {
+        "Category Code": "A.11.1",
+        "Category Description": "IC"
+    },
+    {
+        "Category Code": "A.11.2",
+        "Category Description": "QCBS"
+    },
+    {
+        "Category Code": "A.11.3",
+        "Category Description": "LCS"
+    },
+    {
+        "Category Code": "A.11.4",
+        "Category Description": "CQS"
+    },
+    {
+        "Category Code": "A.11.5",
+        "Category Description": "QBS"
+    },
+    {
+        "Category Code": "A.11.6",
+        "Category Description": "Direct Contracting"
+    },
+    {
+        "Category Code": "A.12",
+        "Category Description": "Technical Services"
+    },
+    {
+        "Category Code": "A.12.1",
+        "Category Description": "Hotel/Catering/Conferencing"
+    },
+    {
+        "Category Code": "A.12.2",
+        "Category Description": "Cleaning/Fumigation"
+    },
+    {
+        "Category Code": "A.12.3",
+        "Category Description": "Security Services"
+    },
+    {
+        "Category Code": "A.12.3.1",
+        "Category Description": "Manguard"
+    },
+    {
+        "Category Code": "A.12.3.2",
+        "Category Description": "Electronic"
+    },
+    {
+        "Category Code": "A.12.4",
+        "Category Description": "Calibration"
+    },
+    {
+        "Category Code": "A.12.5",
+        "Category Description": "Development of Software, Apps,\n WAN, LAN, Internet Connection,\n Cloud etc (Information\n Technology Solutions)"
+    },
+    {
+        "Category Code": "A.12.5.1",
+        "Category Description": "Outsourcing of Information\n Technology Solution (Cloud etc)"
+    },
+    {
+        "Category Code": "A.12.6",
+        "Category Description": "Repair/Maintenance of Laboratory\n Equipment"
+    },
+    {
+        "Category Code": "A.12.7",
+        "Category Description": "Repair/Maintenance of other\n Electrical/Electronic Items (CCTV,\n Fence monitoring etc)"
+    },
+    {
+        "Category Code": "A.12.8",
+        "Category Description": "Repair/Maintenance of Internet Connectivity, WAN, LAN, Cloud etc"
+    },
+    {
+        "Category Code": "A.12.9",
+        "Category Description": "Provision of Insurance (Vehicles,\n Infrastructure etc)"
+    },
+    {
+        "Category Code": "A.12.10",
+        "Category Description": "Provision of Road-Worthiness\n Certificate"
+    },
+    {
+        "Category Code": "A.12.11",
+        "Category Description": "Renting of offices and residencies"
+    },
+    {
+        "Category Code": "A.12.12",
+        "Category Description": "Fire Security (Fire Permit;\n Repair/Maintenance/Servicing of\n Fire Extinguishers)"
+    },
+    {
+        "Category Code": "A.12.13",
+        "Category Description": "Outsourcing of Facility\n Management"
+    },
+    {
+        "Category Code": "A.12.14",
+        "Category Description": "Medical/Laboratory/Diagnostic investigations"
+    },
+    {
+        "Category Code": "A.12.15",
+        "Category Description": "Transport Services"
+    },
+    {
+        "Category Code": "A.12.16",
+        "Category Description": "Brands/Advertising/Communicati on Services"
+    },
+    {
+        "Category Code": "A.12.17",
+        "Category Description": "Maintenance/repairs services for\n Vehicles"
+    },
+    {
+        "Category Code": "B.1",
+        "Category Description": "Laboratory Equipment Supplies"
+    },
+    {
+        "Category Code": "B.1.1",
+        "Category Description": "Spare parts"
+    },
+    {
+        "Category Code": "B.1.2",
+        "Category Description": "Other consumables to run\n Laboratory equipment"
+    },
+    {
+        "Category Code": "B.1.3",
+        "Category Description": "Test kits"
+    },
+    {
+        "Category Code": "B.2",
+        "Category Description": "Vehicle/Motorcycle consumables"
+    },
+    {
+        "Category Code": "B.2.1",
+        "Category Description": "Vehicle Tyres"
+    },
+    {
+        "Category Code": "B.2.2",
+        "Category Description": "Vehicle Batteries"
+    },
+    {
+        "Category Code": "B.2.3",
+        "Category Description": "Vehicle Parts"
+    },
+    {
+        "Category Code": "B.3",
+        "Category Description": " "
+    },
+    {
+        "Category Code": "B.4",
+        "Category Description": "Stationery"
+    },
+    {
+        "Category Code": "B.4.1",
+        "Category Description": "Design and printing of educational materials/policies/guidelines/manua ls"
+    },
+    {
+        "Category Code": "B.5",
+        "Category Description": "Laboratory Consumables"
+    },
+    {
+        "Category Code": "B.6",
+        "Category Description": "Protective Gadgets/Uniforms"
+    },
+    {
+        "Category Code": "B.7",
+        "Category Description": "Office consumables (toiletries)"
+    },
+    {
+        "Category Code": "B.8",
+        "Category Description": "Office consumables (other than\n toiletries)"
+    },
+    {
+        "Category Code": "B.9",
+        "Category Description": "Low value Office Equipment\n (Microwave,Binders, Shredder,\n Water Dispensers)"
+    },
+    {
+        "Category Code": "B.9.1",
+        "Category Description": "Consumables for Electrical,\n Electronic and Office Equipment"
+    },
+    {
+        "Category Code": "B.9.2",
+        "Category Description": "Parts for Electrical, Electronic and\n Office Equipment"
+    },
+    {
+        "Category Code": "B.10",
+        "Category Description": "Food products"
+    }
+]

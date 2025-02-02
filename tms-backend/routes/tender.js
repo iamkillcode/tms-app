@@ -1,47 +1,69 @@
 const express = require("express");
-const { 
-  createTender,
-  updateTender,
-  addDropdownOption 
-} = require("../controllers/tenderController");
+const { body, param } = require("express-validator");
+const tenderController = require("../controllers/tenderController");
 const { authenticateToken } = require("../middleware/auth");
-const Tender = require("../models/Tender");
 
 const router = express.Router();
 
 /**
- * Create a new tender
- * POST /
- * @requires authentication
+ * @route POST /api/tenders
+ * @desc Create a new tender
+ * @access Private
  */
-router.post("/", authenticateToken, createTender);
+router.post(
+  "/",
+  authenticateToken,
+  [
+    body("title").notEmpty().withMessage("Title is required"),
+    body("description").notEmpty().withMessage("Description is required"),
+    body("budget").isNumeric().withMessage("Budget must be a number"),
+  ],
+  tenderController.createTender
+);
 
 /**
- * Update an existing tender
- * PUT /update
- * @requires authentication
+ * @route PUT /api/tenders/:id
+ * @desc Update an existing tender
+ * @access Private
  */
-router.put("/update", authenticateToken, updateTender);
+router.put(
+  "/:id",
+  authenticateToken,
+  [
+    param("id").isMongoId().withMessage("Invalid tender ID"),
+    body("title").optional().notEmpty().withMessage("Title cannot be empty"),
+    body("description").optional().notEmpty().withMessage("Description cannot be empty"),
+    body("budget").optional().isNumeric().withMessage("Budget must be a number"),
+  ],
+  tenderController.updateTender
+);
 
 /**
- * Get tenders for the logged-in user
- * GET /
- * @requires authentication
+ * @route POST /api/tenders/generate-number
+ * @desc Generate a unique tender number
+ * @access Private
  */
-router.get("/", authenticateToken, async (req, res) => {
-  try {
-    const tenders = await Tender.find({ createdBy: req.user.id });
-    res.json(tenders);
-  } catch (error) {
-    res.status(500).json({ error: "Error fetching tenders" }); // Changed to 500 for server error
-  }
-});
+router.post(
+  "/generate-number",
+  authenticateToken,
+  [
+    body("department").notEmpty().withMessage("Department is required"),
+    body("categoryCode").notEmpty().withMessage("Category code is required"),
+    body("procurementType").notEmpty().withMessage("Procurement type is required"),
+  ],
+  tenderController.generateTenderNumber
+);
 
 /**
- * Add a new dropdown option
- * POST /add-option
- * @requires authentication
+ * @route POST /api/tenders/dropdown-option
+ * @desc Add a new dropdown option
+ * @access Private
  */
-router.post("/add-option", authenticateToken, addDropdownOption);
+router.post(
+  "/dropdown-option",
+  authenticateToken,
+  [body("type").notEmpty().withMessage("Type is required"), body("value").notEmpty().withMessage("Value is required")],
+  tenderController.addDropdownOption
+);
 
 module.exports = router;

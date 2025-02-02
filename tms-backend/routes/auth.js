@@ -1,33 +1,35 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const { body } = require('express-validator');
+const authController = require('../controllers/authController');
+
 const router = express.Router();
 
-// Sign-up route
-router.post('/signup', async (req, res) => {
-  try {
-    const { fullName, username, email, password } = req.body;
-    const user = new User({ fullName, username, email, password });
-    await user.save();
-    res.status(201).json({ message: 'User created successfully' });
-  } catch (error) {
-    res.status(400).json({ error: 'Error creating user' });
-  }
-});
+router.post(
+  '/login',
+  [
+    body('email')
+      .isEmail()
+      .withMessage('Please enter a valid email')
+      .normalizeEmail(),
+    body('password')
+      .trim()
+      .notEmpty()
+      .withMessage('Password is required')
+  ],
+  authController.login
+);
 
-// Login route
-router.post('/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-    const token = jwt.sign({ id: user._id, role: user.role }, 'secret', { expiresIn: '1h' });
-    res.json({ token });
-  } catch (error) {
-    res.status(400).json({ error: 'Error logging in' });
-  }
-});
+router.post(
+  '/signup',
+  [
+    body('name').trim().not().isEmpty().withMessage('Name is required'),
+    body('email').isEmail().withMessage('Please enter a valid email'),
+    body('password')
+      .trim()
+      .isLength({ min: 6 })
+      .withMessage('Password must be at least 6 characters long')
+  ],
+  authController.signup
+);
 
-module.exports = router; 
+module.exports = router;

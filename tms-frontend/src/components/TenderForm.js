@@ -66,4 +66,4 @@ const TenderForm = () => {
     );
 };
 
-export default TenderForm; 
+export default TenderForm;
