@@ -39,29 +39,29 @@ const TenderForm = () => {
     }, []);
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Department:</label>
-                <select value={department} onChange={e => setDepartment(e.target.value)}>
+        <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-4">
+            <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Department:</label>
+                <select value={department} onChange={e => setDepartment(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     <option value="PSD">PSD - Procurement and Supply Chain Department</option>
                     {/* Add more options dynamically */}
                 </select>
             </div>
-            <div>
-                <label>Category Code:</label>
-                <select value={categoryCode} onChange={e => setCategoryCode(e.target.value)}>
+            <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Category Code:</label>
+                <select value={categoryCode} onChange={e => setCategoryCode(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     <option value="A.0">A.0 - Example Category</option>
                     {/* Add more options dynamically from Excel */}
                 </select>
             </div>
-            <div>
-                <label>Procurement Type:</label>
-                <select value={procurementType} onChange={e => setProcurementType(e.target.value)}>
+            <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Procurement Type:</label>
+                <select value={procurementType} onChange={e => setProcurementType(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     <option value="NCT">NCT - National Competitive Tender</option>
                     {/* Add more options dynamically */}
                 </select>
             </div>
-            <button type="submit">Generate Tender Number</button>
+            <button type="submit" className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Generate Tender Number</button>
         </form>
     );
 };
