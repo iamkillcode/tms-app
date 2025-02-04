@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import AuthLayout from "../layouts/AuthLayout"
-import { GoogleIcon, GitHubIcon } from "../components/Icons"
+import { GoogleIcon, GitHubIcon, EyeIcon, EyeSlashIcon } from "../components/Icons"
+import toast from 'react-hot-toast';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,9 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
   })
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -22,12 +26,12 @@ const SignUp = () => {
     
     // Frontend validation
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match");
+      toast.error("Passwords don't match");
       return;
     }
 
     if (formData.password.length < 8) {
-      alert("Password must be at least 8 characters");
+      toast.error("Password must be at least 8 characters");
       return;
     }
 
@@ -50,10 +54,12 @@ const SignUp = () => {
         throw new Error(data.error || 'Registration failed');
       }
 
-      // Redirect to login on success
-      window.location.href = '/login';
+      toast.success('Registration successful! Redirecting to login...');
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
     }
   }
 
@@ -81,14 +87,44 @@ const SignUp = () => {
               <label htmlFor={field.id} className="block text-sm font-medium text-gray-700 mb-1">
                 {field.label}
               </label>
-              <input
-                {...field}
-                name={field.id}
-                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder={`Enter your ${field.label.toLowerCase()}`}
-                value={formData[field.id]}
-                onChange={handleChange}
-              />
+              <div className="relative">
+                <input
+                  {...field}
+                  name={field.id}
+                  className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pr-10"
+                  placeholder={`Enter your ${field.label.toLowerCase()}`}
+                  value={formData[field.id]}
+                  onChange={handleChange}
+                />
+                {field.id === 'password' && (
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-indigo-600"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeSlashIcon className="w-5 h-5" />
+                    ) : (
+                      <EyeIcon className="w-5 h-5" />
+                    )}
+                  </button>
+                )}
+                {field.id === 'confirmPassword' && (
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-indigo-600"
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeSlashIcon className="w-5 h-5" />
+                    ) : (
+                      <EyeIcon className="w-5 h-5" />
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
