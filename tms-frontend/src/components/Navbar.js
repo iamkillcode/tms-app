@@ -41,7 +41,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 mb-16 ${
         scrolled ? "bg-white shadow-md py-2" : "bg-transparent py-4"
       }`}
     >
@@ -80,8 +80,11 @@ const Navbar = () => {
                     <NavLink to="/tenders" className="text-sm font-medium">
                       Tenders
                     </NavLink>
-                    <NavLink to="/profile" className="text-sm font-medium">
+                    <NavLink to="/profile" className="text-sm font-medium hover:text-blue-600">
                       Profile
+                    </NavLink>
+                    <NavLink to="/tools" className="hover:text-blue-600">
+                      Tools
                     </NavLink>
                   </>
                 )}
@@ -160,4 +163,3 @@ const Navbar = () => {
 }
 
 export default Navbar
-

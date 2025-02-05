@@ -19,7 +19,7 @@ const Landing = () => {
               to="/register"
               className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
             >
-              Create New Tender
+              Generate a New Tender Number
             </Link>
             <button className="px-6 py-3 border border-indigo-600 text-indigo-600 rounded-md hover:bg-indigo-50">
               Watch Demo
@@ -68,10 +68,10 @@ const Landing = () => {
               Built-in validation for Public Procurement Act (Act 663) and FDA specific requirements
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
-              <img src="./coatofarms.svg" alt="Coat of Arms" className="h-20 w-auto mx-auto" />
+              <img src="./coatofarms.png" alt="Coat of Arms" className="h-20 w-auto mx-auto" />
               <img src="/ppalogo.png" alt="PPA Logo" className="h-20 w-auto mx-auto" />
-              <img src="/iso-certified.png" alt="ISO Certified" className="h-20 w-auto mx-auto" />
-              <img src="/gdpr-compliant.png" alt="GDPR Compliant" className="h-20 w-auto mx-auto" />
+              <img src="/favicon.png" alt="ISO Certified" className="h-20 w-auto mx-auto" />
+              <img src="/moh.jpg" alt="GDPR Compliant" className="h-20 w-auto mx-auto" />
             </div>
           </div>
         </div>
