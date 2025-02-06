@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { FiMenu, FiX } from "react-icons/fi"
 import { useAuth } from "../context/AuthContext"
+import toast from 'react-hot-toast'
 // import { BuildingOffice2Icon } from "@heroicons/react/24/outline"
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user, logout } = useAuth()
   const publicRoutes = ['/login', '/signup', '/']
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,6 +39,12 @@ const Navbar = () => {
         {children}
       </Link>
     )
+  }
+
+  const handleLogout = () => {
+    logout()
+    toast.success('Logged out successfully')
+    navigate('/login')
   }
 
   return (
@@ -86,6 +94,12 @@ const Navbar = () => {
                     <NavLink to="/tools" className="hover:text-blue-600">
                       Tools
                     </NavLink>
+                    <button
+                      onClick={handleLogout}
+                      className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors duration-200 shadow-sm"
+                    >
+                      Logout
+                    </button>
                   </>
                 )}
               </>
@@ -155,6 +169,17 @@ const Navbar = () => {
                 Profile
               </NavLink>
             </>
+          )}
+          {user && (
+            <button
+              onClick={() => {
+                handleLogout();
+                setIsOpen(false);
+              }}
+              className="block px-4 py-2 text-sm font-medium rounded-lg hover:bg-indigo-50"
+            >
+              Logout
+            </button>
           )}
         </div>
       )}

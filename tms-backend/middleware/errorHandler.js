@@ -13,22 +13,19 @@ class APIError extends Error {
 
 /**
  * Global error handler middleware
- * @param {Error} err - Error object
- * @param {import('express').Request} req - Express request object
- * @param {import('express').Response} res - Express response object
- * @param {import('express').NextFunction} next - Next middleware function
  */
 const errorHandler = (err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  const message = err.isOperational ? err.message : 'Internal Server Error';
+  console.error('Error:', err.stack);
 
-  res.status(statusCode).json({
-    error: {
-      code: statusCode,
-      message,
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-    }
+  // Default error status and message
+  const status = err.status || 500;
+  const message = err.message || 'Internal Server Error';
+
+  // Send error response
+  res.status(status).json({
+    message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   });
 };
 
-module.exports = { APIError, errorHandler }; 
+export default errorHandler; 

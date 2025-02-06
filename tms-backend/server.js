@@ -1,13 +1,14 @@
-require('dotenv').config();
+import 'dotenv/config';
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import auth from './routes/auth.js';
+import tenderRoutes from './routes/tenders.js';
+import errorHandler from './middleware/errorHandler.js';
 
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
-const authRoutes = require('./routes/auth');
-const { errorHandler } = require('./middleware/errorHandler');
-const rateLimit = require('express-rate-limit');
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -62,8 +63,10 @@ mongoose.connection.on('error', (err) => {
 
 // Configure CORS
 app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
+  origin: ['http://localhost:3002', 'http://127.0.0.1:3002'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
@@ -73,7 +76,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authLimiter);
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', auth);
+app.use('/api/tenders', tenderRoutes);
 
 app.use(errorHandler);
 

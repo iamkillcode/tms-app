@@ -16,7 +16,7 @@ const Landing = () => {
           </p>
           <div className="flex justify-center space-x-4">
             <Link
-              to="/register"
+              to="/signup"
               className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
             >
               Generate a New Tender Number
