@@ -1,6 +1,7 @@
 import express from 'express';
-import authMiddleware from '../middleware/auth.js';
-import { generateSequentialNumber, createTender } from '../controllers/tenderController.js';
+import { authMiddleware } from '../middleware/auth.js';
+import { createTender } from '../controllers/tenderController.js';
+import { getNextSequentialNumber } from '../utils/sequentialNumberGenerator.js';
 import Tender from '../models/Tender.js';
 
 const router = express.Router();
@@ -74,39 +75,17 @@ router.post('/', authMiddleware, async (req, res) => {
 // Save new tender with generated number
 router.post('/save', authMiddleware, async (req, res) => {
   try {
-    // Find the latest tender to get the last sequential number
-    const latestTender = await Tender.findOne()
-      .sort({ sequentialNumber: -1 })
-      .limit(1);
-    
-    const nextSequentialNumber = latestTender ? latestTender.sequentialNumber + 1 : 1;
-
-    // Create new tender with user input and generated number
-    const newTender = new Tender({
+    const tender = new Tender({
       ...req.body,
-      sequentialNumber: nextSequentialNumber,
-      generatedBy: req.user._id,  // Use the authenticated user's ID
-      generatedDate: new Date()
+      generatedBy: req.user._id
     });
-
-    await newTender.save();
-    
-    // Populate user details before sending response
-    await newTender.populate({
-      path: 'generatedBy',
-      select: 'firstName lastName email name'
-    });
-    
-    res.status(201).json({
-      success: true,
-      tender: newTender,
-      message: 'Tender saved successfully'
-    });
+    await tender.save();
+    return res.status(201).json(tender);
   } catch (error) {
-    console.error('Error saving tender:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: error.message 
+    console.error('Save tender error:', error);
+    return res.status(500).json({
+      error: 'Failed to save tender',
+      details: error.message
     });
   }
 });
@@ -143,6 +122,41 @@ router.get('/', authMiddleware, async (req, res) => {
   } catch (error) {
     console.error('Error fetching tenders:', error);
     res.status(500).json({ message: error.message });
+  }
+});
+
+// Get next sequence number
+router.get('/next-sequence', authMiddleware, async (req, res) => {
+  try {
+    // Verify user is authenticated
+    if (!req.user) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    console.log('Generating sequence for user:', req.user._id);
+    
+    // Get next number
+    const number = await getNextSequentialNumber();
+    
+    if (!number && number !== 0) {
+      throw new Error('Failed to generate valid sequence number');
+    }
+
+    console.log('Generated sequence number:', number);
+    
+    // Send response
+    return res.status(200).json({
+      sequentialNumber: number,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Sequence generation error:', error);
+    return res.status(500).json({
+      error: 'Failed to generate sequence number',
+      details: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 });
 

@@ -63,10 +63,8 @@ mongoose.connection.on('error', (err) => {
 
 // Configure CORS
 app.use(cors({
-  origin: ['http://localhost:3002', 'http://127.0.0.1:3002'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: 'http://localhost:3000', // Your frontend URL
+  credentials: true
 }));
 
 app.use(express.json());
@@ -84,3 +82,5 @@ app.use(errorHandler);
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+export default app;

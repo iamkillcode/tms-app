@@ -1,41 +1,25 @@
 import Tender from '../models/Tender.js';
+import { getNextSequentialNumber } from '../utils/sequentialNumberGenerator.js';
 
-export const generateSequentialNumber = async (userId) => {
-  try {
-    let counter = await Tender.findOne({ type: 'counter' });
-    
-    if (!counter) {
-      counter = new Tender({
-        type: 'counter',
-        sequentialNumber: 0,
-        activity: 'counter',
-        category: 'counter',
-        categoryType: 'counter',
-        procurementType: 'counter',
-        tenderNumber: 'COUNTER-DOC',
-        generatedBy: userId
-      });
-    }
-
-    counter.sequentialNumber += 1;
-    await counter.save();
-    
-    return counter.sequentialNumber;
-  } catch (error) {
-    throw new Error(`Failed to generate sequential number: ${error.message}`);
-  }
+const validateTenderFormat = (tenderNumber) => {
+  const pattern = /^FDA\/PSD\/\d{4}\/(A\.\d+(?:\.\d+)?)\/([A-Z]+)-\d{4}(?: \(\d{2}\))?(?: \(C\d{2}\))?(?: \(A\d+\))?$/;
+  return pattern.test(tenderNumber);
 };
 
-export const createTender = async (tenderData, userId) => {
+export const createTender = async (req, res) => {
   try {
     const tender = new Tender({
-      ...tenderData,
-      generatedBy: userId
+      ...req.body,
+      generatedBy: req.user._id
     });
-    
+
+    if (!validateTenderFormat(tender.tenderNumber)) {
+      return res.status(400).json({ error: 'Invalid tender number format' });
+    }
+
     await tender.save();
-    return tender;
+    res.status(201).json(tender);
   } catch (error) {
-    throw new Error(`Failed to create tender: ${error.message}`);
+    res.status(500).json({ error: error.message });
   }
 };

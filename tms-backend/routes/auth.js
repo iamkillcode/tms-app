@@ -1,7 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-import authMiddleware from '../middleware/auth.js';
+import { authMiddleware } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -95,6 +95,10 @@ router.post('/login', async (req, res) => {
     });
     res.status(500).json({ error: 'Server error during login' });
   }
+});
+
+router.get('/profile', authMiddleware, async (req, res) => {
+  // ... route handler code
 });
 
 export default router; 

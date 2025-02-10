@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
@@ -6,6 +6,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import categories from '../assets/categories.json';
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const TenderNumberGenerator = () => {
   const { user } = useAuth();
@@ -19,13 +21,13 @@ const TenderNumberGenerator = () => {
     amendmentNumber: '',
     status: 'in-progress'
   });
-  const [sequentialNumber, setSequentialNumber] = useState(null);
   const [generatedNumber, setGeneratedNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
   const [error, setError] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
   const [lastNumber, setLastNumber] = useState(0);
+  const navigate = useNavigate();
 
   // Category options for react-select
   const categoryOptions = categories.map(cat => ({
@@ -58,80 +60,24 @@ const TenderNumberGenerator = () => {
     { value: 'ICT', label: 'International Competitive Tendering (ICT)' }
   ];
 
-  const saveTenderNumber = async (tenderNumber, sequentialNumber) => {
+  const getNextSequence = useCallback(async () => {
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/tenders`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-          },
-          body: JSON.stringify({
-            ...formData,
-            tenderNumber,
-            generatedDate: new Date().toISOString(),
-            generatedBy: user.id,
-            sequentialNumber
-          })
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to save tender number');
-      }
-    } catch (error) {
-      console.error('Save failed:', error);
-      throw error; // Re-throw to handle in generateTenderNumber
+      const response = await axios.get('/api/tenders/next-sequence', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+      });
+      return response.data.sequentialNumber;
+    } catch (err) {
+      throw new Error('Failed to get sequence number');
     }
-  };
-
-  const validateForm = () => {
-    const errors = {};
-    
-    if (!formData.activity?.trim()) {
-      errors.activity = 'Activity title is required';
-    }
-    if (!formData.category) {
-      errors.category = 'Category is required';
-    }
-    if (!formData.procurementType) {
-      errors.procurementType = 'Procurement type is required';
-    }
-    
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  }, []);
 
   const generateTenderNumber = async () => {
     if (loading) return;
     
     try {
       setLoading(true);
-      const token = localStorage.getItem('authToken');
-      
-      // Make sure we're using the correct API URL
-      const response = await fetch('http://localhost:5000/api/tenders/sequential', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'Access-Control-Allow-Origin': '*'
-        },
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to get sequential number');
-      }
-
-      const data = await response.json();
-      console.log('Sequential number received:', data);
-
-      const formattedNumber = generateFormattedTenderNumber(data);
+      const formattedNumber = await generateFormattedTenderNumber(formData);
       setGeneratedNumber(formattedNumber);
-      
     } catch (error) {
       console.error('Generation error:', error);
       setError(error.message);
@@ -141,27 +87,44 @@ const TenderNumberGenerator = () => {
     }
   };
 
-  const generateFormattedTenderNumber = (data) => {
+  const generateFormattedTenderNumber = async (data) => {
     try {
-      // Fixed components
-      const organization = 'FDA';
-      const department = 'PSD';
-      const year = new Date().getFullYear();
+      console.log('Starting tender number generation...'); // Debug log
       
-      // Get category code from selection (e.g., "A.4")
-      const categoryCode = data.category?.value || '';
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        throw new Error('Authentication token not found');
+      }
+
+      // Use axios instead of fetch
+      const response = await axios.get('/api/tenders/next-sequence', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log('Server response:', response.data); // Debug log
+
+      const { sequentialNumber } = response.data;
+      if (!sequentialNumber && sequentialNumber !== 0) {
+        throw new Error('Invalid sequence number received');
+      }
+
+      // Format the sequential number
+      const formattedSeqNumber = String(sequentialNumber).padStart(4, '0');
       
-      // Get procurement type (e.g., "SIS")
-      const procType = data.procurementType || '';
+      // Validate required fields
+      if (!data.category?.value) {
+        throw new Error('Category is required');
+      }
+      if (!data.procurementType) {
+        throw new Error('Procurement type is required');
+      }
+
+      // Build tender number
+      let tenderNumber = `FDA/PSD/${new Date().getFullYear()}/${data.category.value}/${data.procurementType}-${formattedSeqNumber}`;
       
-      // Increment the number and format to 4 digits
-      const nextNumber = lastNumber + 1;
-      const formattedSeqNumber = String(nextNumber).padStart(4, '0');
-      
-      // Build base tender number
-      let tenderNumber = `${organization}/${department}/${year}/${categoryCode}/${procType}-${formattedSeqNumber}`;
-      
-      // Add optional components with proper formatting
+      // Add optional components
       if (data.lotNumber) {
         tenderNumber += ` (${String(data.lotNumber).padStart(2, '0')})`;
       }
@@ -171,24 +134,50 @@ const TenderNumberGenerator = () => {
       if (data.amendmentNumber) {
         tenderNumber += ` (A${data.amendmentNumber})`;
       }
-      
-      // Update the last number used
-      setLastNumber(nextNumber);
-      
+
+      console.log('Generated tender number:', tenderNumber); // Debug log
       return tenderNumber;
     } catch (error) {
-      console.error('Error formatting tender number:', error);
-      throw new Error('Failed to format tender number');
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      throw new Error(`Failed to format tender number: ${error.message}`);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    
     try {
+      setLoading(true);
       const token = localStorage.getItem('authToken');
       
-      // Create a clean data object with only the values we need
+      if (!token) {
+        toast.error('Please log in again');
+        navigate('/login');
+        return;
+      }
+
+      // Validate required fields
+      if (!formData.activity?.trim()) {
+        throw new Error('Activity is required');
+      }
+      if (!formData.category) {
+        throw new Error('Category is required');
+      }
+      if (!formData.categoryType?.trim()) {
+        throw new Error('Category Type is required');
+      }
+      if (!formData.procurementType?.trim()) {
+        throw new Error('Procurement Type is required');
+      }
+
+      // First generate the tender number
+      const formattedTenderNumber = await generateFormattedTenderNumber(formData);
+
+      // Create the tender data
       const tenderData = {
         activity: formData.activity,
         category: formData.category?.value || '',
@@ -198,42 +187,39 @@ const TenderNumberGenerator = () => {
         callOffNumber: formData.callOffNumber || '',
         amendmentNumber: formData.amendmentNumber || '',
         status: 'active',
-        generatedBy: user._id  // Use user from component level
+        tenderNumber: formattedTenderNumber,
       };
 
-      console.log('Sending tender data:', tenderData);
-
-      // Generate the tender number
-      const generatedTenderNumber = generateFormattedTenderNumber(tenderData);
-      console.log('Generated tender number:', generatedTenderNumber);
-      
-      // Save tender details to backend
       const response = await fetch('http://localhost:5000/api/tenders/save', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          ...tenderData,
-          tenderNumber: generatedTenderNumber
-        })
+        body: JSON.stringify(tenderData)
       });
 
-      const data = await response.json();
-      console.log('Response from server:', data);
-      
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to save tender');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save tender');
       }
 
-      // Set the generated number in state
-      setGeneratedNumber(generatedTenderNumber);
-      toast.success('Tender number generated and saved successfully');
+      const savedTender = await response.json();
+      toast.success(`Tender number generated: ${savedTender.tenderNumber}`);
       
+      // Reset form after successful submission
+      setFormData({
+        activity: '',
+        category: null,
+        categoryType: '',
+        procurementType: '',
+        lotNumber: '',
+        callOffNumber: '',
+        amendmentNumber: ''
+      });
+
     } catch (error) {
-      console.error('Error:', error);
-      setError(error.message);
+      console.error('Submission error:', error);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -372,7 +358,9 @@ const TenderNumberGenerator = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
+                ${loading ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'}
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
             >
               {loading ? 'Generating...' : 'Generate Tender Number'}
             </button>

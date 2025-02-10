@@ -9,10 +9,18 @@ const tenderSchema = new mongoose.Schema({
   callOffNumber: String,
   amendmentNumber: String,
   status: { type: String, default: 'in-progress' },
-  tenderNumber: { type: String, required: true, unique: true },
+  tenderNumber: {
+    type: String,
+    required: true,
+    unique: true
+  },
   sequentialNumber: { type: Number, required: true },
   generatedDate: { type: Date, default: Date.now },
-  generatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  generatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   type: { type: String } // For counter document
 });
 

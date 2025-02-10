@@ -7,28 +7,32 @@ import User from '../models/User.js';
  * @param {import('express').Response} res - Express response object
  * @param {import('express').NextFunction} next - Next middleware function
  */
-const authMiddleware = async (req, res, next) => {
+export const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    // Get token from header
+    const token = req.header('Authorization')?.replace('Bearer ', '');
     
     if (!token) {
-      return res.status(401).json({ message: 'Authentication required' });
+      return res.status(401).json({ message: 'No auth token found' });
     }
 
+    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // Verify user exists
+    console.log('Decoded token:', decoded); // Debug log
+
+    // Find user
     const user = await User.findById(decoded.id);
+    console.log('Found user:', user); // Debug log
+
     if (!user) {
-      return res.status(401).json({ message: 'User not found' });
+      throw new Error('User not found');
     }
-    
-    req.user = decoded;
+
+    // Attach user to request
+    req.user = user;
     next();
   } catch (error) {
-    console.error('Auth error:', error);
-    res.status(401).json({ message: 'Invalid token' });
+    console.error('Auth middleware error:', error);
+    res.status(401).json({ message: 'Authentication failed' });
   }
 };
-
-export default authMiddleware;
